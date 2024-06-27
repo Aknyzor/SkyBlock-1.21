@@ -1,0 +1,6 @@
+name: SkyBlock
+version: '${project.version}'
+main: me.aknyzor.SkyBlock
+api-version: '1.21'
+authors: [Aknzyor]
+description: Plugin za KGB SkyBlock
