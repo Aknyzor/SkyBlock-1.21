@@ -15,7 +15,7 @@ public class FishingArea implements Listener {
         Location location = player.getLocation();
 
         if (!(location.getWorld().getName().contains("world"))) {
-            player.sendMessage("Nije moguće pecati u ovoj oblasti");
+            player.sendMessage("Nije moguće pecati u ovom svetu.");
             event.setCancelled(true);
         }
     }
