@@ -2,11 +2,14 @@ package me.aknyzor;
 
 import me.aknyzor.fishing.CustomCaught;
 import me.aknyzor.fishing.FishingArea;
+import me.aknyzor.trader.Trader;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@SuppressWarnings("unused")
 public final class SkyBlock extends JavaPlugin {
 
+    private Trader trader;
     @Override
     public void onEnable() {
         getLogger().info("=========================================");
@@ -17,6 +20,8 @@ public final class SkyBlock extends JavaPlugin {
 
         Bukkit.getServer().getPluginManager().registerEvents(new FishingArea(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomCaught(), this);
+        trader = new Trader(this);
+        trader.scheduleNPC();
     }
 
     @Override
@@ -25,5 +30,7 @@ public final class SkyBlock extends JavaPlugin {
         getLogger().info("SkyBlock dodatak je uspešno ugašen.");
         getLogger().info("Napravljeno od strane Aknyzor");
         getLogger().info("=========================================");
+
+        trader.onDisable();
     }
 }
