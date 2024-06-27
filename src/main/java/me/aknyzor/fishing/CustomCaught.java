@@ -14,6 +14,11 @@ import java.util.*;
 
 public class CustomCaught implements Listener {
 
+    /**
+     *
+     * I dalje u izradi!!!!
+     *
+     */
     private final Random random = new Random();
 
     private final Map<Category, List<LootItem>> lootTable = new HashMap<>();
