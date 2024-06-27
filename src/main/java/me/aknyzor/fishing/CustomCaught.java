@@ -59,7 +59,7 @@ public class CustomCaught implements Listener {
 
     private void registerLoot() {
         lootTable.put(Category.TREASURE, Arrays.asList(
-                new LootItem(Material.DIAMOND, 0.05, "Shiny Diamond", "A precious diamond"),
+                new LootItem(Material.DIAMOND, 0.5, "Shiny Diamond", "A precious diamond"), // 50% šanse
                 new LootItem(Material.GOLD_INGOT, 0.10, "Golden Ingot", "A valuable gold ingot")
         ));
 
