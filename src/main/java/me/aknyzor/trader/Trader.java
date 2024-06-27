@@ -11,7 +11,8 @@ import java.util.Random;
 /**
  *
  * I dalje je u izradi (Aknyzor)
- * 27.6.2024 Napomena: Dodati da proverava da li je npc spawnovan zbog bolje optimizacije, i odraditi malo bolje kod.
+ * 27.6.2024. Napomena: Dodati da proverava da li je npc spawnovan zbog bolje optimizacije, i odraditi malo bolje kod.
+ * 27.6.2024. Dodati da budu drugačije komande za svaku destinaciju
  *
  */
 
