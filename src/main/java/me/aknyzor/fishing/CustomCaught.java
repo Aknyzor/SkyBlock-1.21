@@ -66,23 +66,23 @@ public class CustomCaught implements Listener {
 
     private void registerLoot() {
         lootTable.put(Category.TREASURE, Arrays.asList(
-                new LootItem(Material.DIAMOND, "Shiny Diamond", "A precious diamond"),
-                new LootItem(Material.GOLD_INGOT, "Golden Ingot", "A valuable gold ingot")
+                new LootItem(Material.DIAMOND, "Shiny Diamond", "A precious diamond."),
+                new LootItem(Material.GOLD_INGOT, "Golden Ingot", "A valuable gold ingot.")
         ));
 
         lootTable.put(Category.FISH, Arrays.asList(
-                new LootItem(Material.COD, "Cod", "A fresh catch of cod"),
-                new LootItem(Material.SALMON, "Salmon", "A tasty salmon fish")
+                new LootItem(Material.COD, "Cod", "A fresh catch of cod."),
+                new LootItem(Material.SALMON, "Salmon", "A tasty salmon fish.")
         ));
 
         lootTable.put(Category.JUNK, Arrays.asList(
-                new LootItem(Material.BOWL, "Bowl", "An empty bowl"),
-                new LootItem(Material.STICK, "Stick", "Just a stick")
+                new LootItem(Material.BOWL, "Bowl", "An empty bowl."),
+                new LootItem(Material.STICK, "Stick", "Just a stick.")
         ));
 
         lootTable.put(Category.SPECIAL, Arrays.asList(
-                new LootItem(Material.EMERALD, "Emerald", "A rare emerald"),
-                new LootItem(Material.NAME_TAG, "Name Tag", "A useful name tag")
+                new LootItem(Material.EMERALD, "Emerald", "A rare emerald."),
+                new LootItem(Material.NAME_TAG, "Name Tag", "A useful name tag.")
         ));
     }
 
