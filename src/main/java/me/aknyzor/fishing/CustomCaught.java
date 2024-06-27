@@ -53,7 +53,7 @@ public class CustomCaught implements Listener {
 
                             caught.setItemStack(item);
 
-                            Player player = (Player) event.getPlayer();
+                            Player player = event.getPlayer();
                             player.sendMessage(Component.text("Upecao si: ").append(Component.text(selected.getName())));
                         }
                     }
