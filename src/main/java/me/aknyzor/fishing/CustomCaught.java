@@ -49,16 +49,21 @@ public class CustomCaught implements Listener {
 
                             ItemMeta meta = item.getItemMeta();
                             if (meta != null) {
-                                meta.displayName(Component.text(selected.getName()));
+
+                                if (selected.getName() != null) {
+                                    meta.displayName(Component.text(selected.getName()));
+                                }
 
                                 if (category == Category.SPECIAL) {
                                     meta.addEnchant(Enchantment.UNBREAKING, 1, true);
                                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                 }
 
-                                List<Component> loreLines = new ArrayList<>();
-                                loreLines.add(Component.text(selected.getLore()));
-                                meta.lore(loreLines);
+                                if (selected.getLore() != null) {
+                                    List<Component> loreLines = new ArrayList<>();
+                                    loreLines.add(Component.text(selected.getLore()));
+                                    meta.lore(loreLines);
+                                }
 
                                 item.setItemMeta(meta);
                             }
