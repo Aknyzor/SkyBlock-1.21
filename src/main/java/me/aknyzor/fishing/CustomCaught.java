@@ -1,12 +1,15 @@
 package me.aknyzor.fishing;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -17,6 +20,8 @@ public class CustomCaught implements Listener {
     /**
      *
      * I dalje je u izradi (Aknyzor)
+     * 29.6.2024. Podesiti special fish
+     * 29.6.2024. Podesiti šanse
      *
      */
 
@@ -46,6 +51,11 @@ public class CustomCaught implements Listener {
                             if (meta != null) {
                                 meta.displayName(Component.text(selected.getName()));
 
+                                if (category == Category.SPECIAL) {
+                                    meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+                                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                }
+
                                 List<Component> loreLines = new ArrayList<>();
                                 loreLines.add(Component.text(selected.getLore()));
                                 meta.lore(loreLines);
@@ -55,8 +65,12 @@ public class CustomCaught implements Listener {
 
                             caught.setItemStack(item);
 
-                            Player player = event.getPlayer();
-                            player.sendMessage(Component.text("Upecao si: ").append(Component.text(selected.getName())));
+                            if (category == Category.SPECIAL) {
+                                Player ribolovac = event.getPlayer();
+                                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                                    player.sendMessage(ribolovac.getName() + " caught a " + selected.getName() + "! " + selected.getLore().replaceAll("\n", "").replace("§8Found In: §9WATER", ""));
+                                }
+                            }
                         }
                     }
                 }
@@ -65,30 +79,48 @@ public class CustomCaught implements Listener {
     }
 
     private void registerLoot() {
-        lootTable.put(Category.TREASURE, Arrays.asList(
-                new LootItem(Material.DIAMOND, "Shiny Diamond", "A precious diamond."),
-                new LootItem(Material.GOLD_INGOT, "Golden Ingot", "A valuable gold ingot.")
+        lootTable.put(Category.FISH, Arrays.asList(
+                new LootItem(Material.TROPICAL_FISH, null, null),
+                new LootItem(Material.COD, null, null),
+                new LootItem(Material.PUFFERFISH, null, null),
+                new LootItem(Material.SALMON, null, null)
         ));
 
-        lootTable.put(Category.FISH, Arrays.asList(
-                new LootItem(Material.COD, "Cod", "A fresh catch of cod."),
-                new LootItem(Material.SALMON, "Salmon", "A tasty salmon fish.")
+        lootTable.put(Category.TREASURE, Arrays.asList(
+                new LootItem(Material.COMPASS, null, null),
+                new LootItem(Material.EMERALD, null, null),
+                new LootItem(Material.GOLDEN_PICKAXE, null, null),
+                new LootItem(Material.SADDLE, null, null),
+                new LootItem(Material.NAME_TAG, null, null),
+                new LootItem(Material.BLAZE_ROD, null, null),
+                new LootItem(Material.MAGMA_CREAM, null, null),
+                new LootItem(Material.BONE, null, null),
+                new LootItem(Material.IRON_SWORD, null, null)
         ));
 
         lootTable.put(Category.JUNK, Arrays.asList(
-                new LootItem(Material.BOWL, "Bowl", "An empty bowl."),
-                new LootItem(Material.STICK, "Stick", "Just a stick.")
+                new LootItem(Material.BOWL, null, null),
+                new LootItem(Material.INK_SAC, null, null),
+                new LootItem(Material.LEATHER, null, null),
+                new LootItem(Material.LILY_PAD, null, null),
+                new LootItem(Material.RABBIT_HIDE, null, null),
+                new LootItem(Material.FEATHER, null, null),
+                new LootItem(Material.ROTTEN_FLESH, null, null),
+                new LootItem(Material.STRING, null, null),
+                new LootItem(Material.COAL, null, null)
         ));
 
         lootTable.put(Category.SPECIAL, Arrays.asList(
-                new LootItem(Material.EMERALD, "Emerald", "A rare emerald."),
-                new LootItem(Material.NAME_TAG, "Name Tag", "A useful name tag.")
+                new LootItem(Material.TROPICAL_FISH, "§e§lNemo", "§8Found In: §9WATER\n\n§7Maybe he's lost again?"),
+                new LootItem(Material.SLIME_BALL, "§e§lKnockback Slimeball", "§8Found In: §9WATER\n\n§7So this is where\nit's been all this time?"),
+                new LootItem(Material.BAKED_POTATO, "§e§lHot Potato", "§8Found In: §9WATER\n\n§7Would you look at that?"),
+                new LootItem(Material.QUARTZ, "§e§lBarnacle", "§8Found In: §9WATER\n\n§7It really grows on you.")
         ));
     }
 
     private void registerCategoryChances() {
-        categoryChances.put(Category.TREASURE, 0.15);
         categoryChances.put(Category.FISH, 0.7); // 70% šansa
+        categoryChances.put(Category.TREASURE, 0.15);
         categoryChances.put(Category.JUNK, 0.1);
         categoryChances.put(Category.SPECIAL, 0.05);
     }
@@ -114,8 +146,8 @@ public class CustomCaught implements Listener {
     }
 
     public enum Category {
-        TREASURE,
         FISH,
+        TREASURE,
         JUNK,
         SPECIAL
     }

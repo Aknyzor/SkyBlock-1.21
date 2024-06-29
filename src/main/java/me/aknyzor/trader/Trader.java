@@ -11,9 +11,10 @@ import java.util.Random;
 /**
  *
  * I dalje je u izradi (Aknyzor)
- * 27.6.2024. Napomena: Dodati da proverava da li je npc spawnovan zbog bolje optimizacije, i odraditi malo bolje kod.
+ * 27.6.2024. Dodati da proverava da li je npc spawnovan, ako nije da ga spawnuje(u slučaju pucanja servera), i odraditi malo bolje kod.
  * 27.6.2024. Dodati da budu drugačije komande za svaku destinaciju
- *
+ * 29.6.2024. Dodati poruke za npca i još neka podešavanja
+ * 29.6.2024. Dodati poruku kad se trgovac spawna
  */
 
 public class Trader {
