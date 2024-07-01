@@ -262,7 +262,7 @@ public class CustomCaught implements Listener {
     public static class LootItem {
         private final Material material;
         private final String name;
-        private final List<String> lore; // Promenili smo u List<String>
+        private final List<String> lore;
 
         public LootItem(Material material, String name, List<String> lore) {
             this.material = material;
