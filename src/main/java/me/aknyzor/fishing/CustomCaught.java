@@ -20,7 +20,6 @@ public class CustomCaught implements Listener {
     /**
      *
      * I dalje je u izradi (Aknyzor)
-     * 29.6.2024. Podesiti šanse
      *
      */
 
