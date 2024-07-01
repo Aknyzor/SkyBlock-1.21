@@ -20,7 +20,6 @@ public class CustomCaught implements Listener {
     /**
      *
      * I dalje je u izradi (Aknyzor)
-     * 29.6.2024. Podesiti special fish
      * 29.6.2024. Podesiti šanse
      *
      */
@@ -61,7 +60,9 @@ public class CustomCaught implements Listener {
 
                                 if (selected.getLore() != null) {
                                     List<Component> loreLines = new ArrayList<>();
-                                    loreLines.add(Component.text(selected.getLore()));
+                                    for (String loreLine : selected.getLore()) {
+                                        loreLines.add(Component.text(loreLine));
+                                    }
                                     meta.lore(loreLines);
                                 }
 
@@ -72,8 +73,13 @@ public class CustomCaught implements Listener {
 
                             if (category == Category.SPECIAL) {
                                 Player ribolovac = event.getPlayer();
+                                StringBuilder loreBuilder = new StringBuilder();
+                                for (String loreLine : selected.getLore()) {
+                                    loreBuilder.append(loreLine.replaceAll("\\n", ""));
+                                }
+                                String loreMessage = loreBuilder.toString().replace("§8Found In: §9WATER", "");
                                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                                    player.sendMessage(ribolovac.getName() + " caught a " + selected.getName() + "! " + selected.getLore().replaceAll("\n", "").replace("§8Found In: §9WATER", ""));
+                                    player.sendMessage("§6" + ribolovac.getName() + " §acaught a " + selected.getName() + "§a! " + loreMessage);
                                 }
                             }
                         }
@@ -116,18 +122,115 @@ public class CustomCaught implements Listener {
         ));
 
         lootTable.put(Category.SPECIAL, Arrays.asList(
-                new LootItem(Material.TROPICAL_FISH, "§e§lNemo", "§8Found In: §9WATER\n\n§7Maybe he's lost again?"),
-                new LootItem(Material.SLIME_BALL, "§e§lKnockback Slimeball", "§8Found In: §9WATER\n\n§7So this is where\nit's been all this time?"),
-                new LootItem(Material.BAKED_POTATO, "§e§lHot Potato", "§8Found In: §9WATER\n\n§7Would you look at that?"),
-                new LootItem(Material.QUARTZ, "§e§lBarnacle", "§8Found In: §9WATER\n\n§7It really grows on you.")
+                new LootItem(Material.TROPICAL_FISH, "§e§lNemo", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Maybe he's lost again?"
+                )),
+                new LootItem(Material.SLIME_BALL, "§e§lKnockback Slimeball", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7So this is where",
+                        "it's been all this time?"
+                )),
+                new LootItem(Material.BAKED_POTATO, "§e§lHot Potato", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Would you look at that?"
+                )),
+                new LootItem(Material.QUARTZ, "§e§lBarnacle", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7It really grows on you."
+                )),
+                new LootItem(Material.COOKED_SALMON, "§e§lLeviathan", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7That's one huge catch!"
+                )),
+                new LootItem(Material.PINK_DYE, "§e§lStar-Eater Scales", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Its' destiny."
+                )),
+                new LootItem(Material.BLAZE_POWDER, "§e§lRubber Duck", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7This isn't meant to be here!"
+                )),
+                new LootItem(Material.BLAZE_POWDER, "§e§lRubber Duck", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7This isn't meant to be here!"
+                )),
+                new LootItem(Material.TROPICAL_FISH, "§e§lOops The Fish", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Oops, wrong game."
+                )),
+                new LootItem(Material.COD, "§e§lShark", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Seems a bit small."
+                )),
+                new LootItem(Material.COD, "§e§lSea Bass", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7No wait- it's at least a C+!"
+                )),
+                new LootItem(Material.POTION, "§e§lSunscreen", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Safety first!"
+                )),
+                new LootItem(Material.GLOWSTONE_DUST, "§e§lPile Of Sand", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Just like the beach!"
+                )),
+                new LootItem(Material.SALMON, "§e§lMahi Mahi", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7So tasty!"
+                )),
+                new LootItem(Material.YELLOW_DYE, "§e§lLucent Bee Hive", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Its' glowing!"
+                )),
+                new LootItem(Material.SALMON, "§e§lSpook The Fish", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Wow, so spooky!"
+                )),
+                new LootItem(Material.NETHER_BRICK, "§e§lChocolate Bar", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Might be a bit soggy."
+                )),
+                new LootItem(Material.COOKED_COD, "§e§lChill The Fish 3", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7BrrRrRRr."
+                )),
+                new LootItem(Material.COOKED_SALMON, "§e§lFrozen Fish", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7Heat in a microwave for 30 seconds."
+                )),
+                new LootItem(Material.MAGENTA_DYE, "§e§lCherry Blossom", Arrays.asList(
+                        "§8Found In: §9WATER",
+                        "",
+                        "§7So pretty!"
+                ))
         ));
     }
 
     private void registerCategoryChances() {
-        categoryChances.put(Category.FISH, 0.7); // 70% šansa
-        categoryChances.put(Category.TREASURE, 0.15);
-        categoryChances.put(Category.JUNK, 0.1);
-        categoryChances.put(Category.SPECIAL, 0.05);
+        categoryChances.put(Category.FISH, 0.40); // 40% šansa
+        categoryChances.put(Category.TREASURE, 0.30); // 30% šanse
+        categoryChances.put(Category.JUNK, 0.20); // 20% šanse
+        categoryChances.put(Category.SPECIAL, 0.10); // 10% šanse
     }
 
     private Category selectCategoryBasedOnChance() {
@@ -160,9 +263,9 @@ public class CustomCaught implements Listener {
     public static class LootItem {
         private final Material material;
         private final String name;
-        private final String lore;
+        private final List<String> lore; // Promenili smo u List<String>
 
-        public LootItem(Material material, String name, String lore) {
+        public LootItem(Material material, String name, List<String> lore) {
             this.material = material;
             this.name = name;
             this.lore = lore;
@@ -176,7 +279,7 @@ public class CustomCaught implements Listener {
             return name;
         }
 
-        public String getLore() {
+        public List<String> getLore() {
             return lore;
         }
     }
