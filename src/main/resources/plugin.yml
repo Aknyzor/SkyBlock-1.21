@@ -5,3 +5,7 @@ api-version: '1.21'
 authors: [Aknzyor]
 description: Plugin za KGB SkyBlock
 depend: [Citizens]
+commands:
+  top:
+    description: Prikazuje top 10 igrača po srušenim blokovima ili ubijenim mobovima.
+    usage: /<command> <blocks|mobs>

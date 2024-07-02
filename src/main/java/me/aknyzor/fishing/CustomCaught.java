@@ -19,7 +19,7 @@ public class CustomCaught implements Listener {
 
     /**
      *
-     * I dalje je u izradi (Aknyzor)
+     * Napravljeno od strane Aknyzor
      *
      */
 
