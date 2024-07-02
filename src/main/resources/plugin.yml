@@ -9,3 +9,4 @@ commands:
   top:
     description: Prikazuje top 10 igrača po srušenim blokovima ili ubijenim mobovima.
     usage: /<command> <blocks|mobs>
+    permission: skyblock.admin
