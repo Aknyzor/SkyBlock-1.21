@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Top10Placeholders extends PlaceholderExpansion {
 
@@ -50,25 +49,27 @@ public class Top10Placeholders extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
-
+    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (identifier.startsWith("blockbreak_")) {
             return getTopListPlaceholder(plugin.getBlockBreakTopList().getTopPlayers(), identifier, "blockbreak_");
         } else if (identifier.startsWith("mobkill_")) {
             return getTopListPlaceholder(plugin.getMobKillTopList().getTopPlayers(), identifier, "mobkill_");
         }
-
         return null;
     }
 
     private String getTopListPlaceholder(LinkedHashMap<String, Integer> topList, String identifier, String prefix) {
-        int rank = Integer.parseInt(identifier.replace(prefix, ""));
-        int index = 0;
-        for (Map.Entry<String, Integer> entry : topList.entrySet()) {
-            if (++index == rank) {
-                return entry.getKey() + " - " + entry.getValue();
-            }
+        int position;
+        try {
+            position = Integer.parseInt(identifier.replace(prefix, ""));
+        } catch (NumberFormatException e) {
+            return "0";
         }
-        return "N/A";
+
+        if (position > 0 && position <= topList.size()) {
+            return (String) topList.keySet().toArray()[position - 1];
+        } else {
+            return "0";
+        }
     }
 }

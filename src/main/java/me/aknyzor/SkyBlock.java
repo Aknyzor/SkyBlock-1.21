@@ -1,5 +1,6 @@
 package me.aknyzor;
 
+import me.aknyzor.customitems.ListenerManager;
 import me.aknyzor.fishing.CustomCaught;
 import me.aknyzor.fishing.FishingArea;
 import me.aknyzor.toplist.*;
@@ -14,11 +15,14 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 public final class SkyBlock extends JavaPlugin {
+
+    private static SkyBlock instance;
     private Trader trader;
     private TopListHandler blockBreakTopList;
     private TopListHandler mobKillTopList;
     @Override
     public void onEnable() {
+        instance = this;
         getLogger().info("=========================================");
         getLogger().info("SkyBlock dodatak je uspešno učitan.");
         getLogger().info("Napravljeno od strane Aknyzor");
@@ -32,11 +36,12 @@ public final class SkyBlock extends JavaPlugin {
             }
         }
 
-        blockBreakTopList = new TopListHandler(this, new File(getDataFolder(), "blockbreak_toplist.yml"));
-        mobKillTopList = new TopListHandler(this, new File(getDataFolder(), "mobkill_toplist.yml"));
+        blockBreakTopList = new TopListHandler("blockbreak_toplist.yml", this);
+        mobKillTopList = new TopListHandler("mobkill_toplist.yml", this);
 
         Bukkit.getServer().getPluginManager().registerEvents(new FishingArea(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomCaught(), this);
+        new ListenerManager(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList), this);
 
         trader = new Trader(this);
@@ -72,6 +77,8 @@ public final class SkyBlock extends JavaPlugin {
         getLogger().info("=========================================");
 
         trader.onDisable();
+        blockBreakTopList.saveConfig();
+        mobKillTopList.saveConfig();
     }
 
     public TopListHandler getBlockBreakTopList() {
@@ -80,5 +87,9 @@ public final class SkyBlock extends JavaPlugin {
 
     public TopListHandler getMobKillTopList() {
         return mobKillTopList;
+    }
+
+    public static SkyBlock getInstance() {
+        return instance;
     }
 }

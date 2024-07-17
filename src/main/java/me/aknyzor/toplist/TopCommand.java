@@ -30,6 +30,7 @@ public class TopCommand implements CommandExecutor {
 
         if (args[0].equalsIgnoreCase("blocks")) {
             displayTopList(sender, blockBreakTopList, "Top 10 Players by Blocks Broken:");
+            blockBreakTopList.clearTopList();
             return true;
         } else if (args[0].equalsIgnoreCase("mobs")) {
             displayTopList(sender, mobKillTopList, "Top 10 Players by Mobs Killed:");

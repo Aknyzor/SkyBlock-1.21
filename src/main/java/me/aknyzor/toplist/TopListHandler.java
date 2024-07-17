@@ -6,72 +6,83 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TopListHandler {
 
-    /**
-     *
-     * I dalje je u izradi (Aknyzor)
-     *
-     */
-
-    private final JavaPlugin plugin;
     private final File file;
     private final FileConfiguration config;
-    private final Map<String, Integer> topPlayers = new LinkedHashMap<>();
+    private final JavaPlugin plugin;
+    private final LinkedHashMap<String, Integer> topPlayers;
 
-    public TopListHandler(JavaPlugin plugin, File file) {
+    public TopListHandler(String fileName, JavaPlugin plugin) {
         this.plugin = plugin;
-        this.file = file;
+        this.file = new File(plugin.getDataFolder(), fileName);
 
+        // Kreiranje fajla ako ne postoji
         if (!file.exists()) {
+            boolean dirsCreated = file.getParentFile().mkdirs();
+            if (dirsCreated) {
+                plugin.getLogger().info("Kreirani direktorijumi za " + file.getName());
+            }
             try {
-                InputStream inputStream = plugin.getResource("blockbreak_toplist.yml");
-                if (inputStream != null) {
-                    Files.copy(inputStream, file.toPath());
-                } else {
-                    plugin.getLogger().warning("Resurs 'blockbreak_toplist.yml' nije pronađen.");
+                boolean fileCreated = file.createNewFile();
+                if (fileCreated) {
+                    plugin.getLogger().info("Kreiran fajl " + file.getName());
                 }
             } catch (IOException e) {
-                plugin.getLogger().severe("Greška prilikom kopiranja resursa 'blockbreak_toplist.yml' iz JAR fajla.");
-                plugin.getLogger().severe(e.getMessage());
+                plugin.getLogger().severe("Greška prilikom kreiranja fajla " + file.getName());
             }
         }
+
+        // Učitavanje konfiguracije
         this.config = YamlConfiguration.loadConfiguration(file);
+        this.topPlayers = new LinkedHashMap<>();
+
+        // Učitavanje podataka iz fajla
+        loadConfig();
     }
 
-    public void addPlayer(String playerName, int count) {
-        topPlayers.put(playerName, topPlayers.getOrDefault(playerName, 0) + count);
-        saveTopList();
+    private void loadConfig() {
+        topPlayers.clear();
+        for (String key : config.getKeys(false)) {
+            topPlayers.put(key, config.getInt(key));
+        }
     }
 
-    public LinkedHashMap<String, Integer> getTopPlayers() {
-        return new LinkedHashMap<>(topPlayers);
+    public void addPlayer(String playerName, int amount) {
+        topPlayers.put(playerName, topPlayers.getOrDefault(playerName, 0) + amount);
+        saveConfig();
     }
 
     public void clearTopList() {
         topPlayers.clear();
-        saveTopList();
+        for (String key : config.getKeys(false)) {
+            config.set(key, null);
+        }
+        saveConfig();
     }
 
-    //private void loadTopList() {
-    //    for (String key : config.getKeys(false)) {
-    //        topPlayers.put(key, config.getInt(key));
-    //    }
-    //}
 
-    private void saveTopList() {
+//  private void loadTopList() {
+//    for (String key : config.getKeys(false)) {
+//        topPlayers.put(key, config.getInt(key));
+//    }
+//  }
+
+    public LinkedHashMap<String, Integer> getTopPlayers() {
+        return topPlayers;
+    }
+
+    public void saveConfig() {
         for (Map.Entry<String, Integer> entry : topPlayers.entrySet()) {
             config.set(entry.getKey(), entry.getValue());
         }
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save top list to " + file.getName() + ": " + e.getMessage());
+            plugin.getLogger().severe("Greška prilikom čuvanja podataka u fajl " + file.getName());
         }
     }
 }
