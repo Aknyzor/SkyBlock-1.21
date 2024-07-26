@@ -1,4 +1,4 @@
-package me.aknyzor.customitems.dracula;
+package me.aknyzor.customitems.suriel;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,32 +13,32 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 
-public class Pickaxe implements Listener {
+public class Suriel implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isDraculaPickaxe(item)) {
-            applyDraculaPickaxeEffects(player);
+        if (isSuriel(item)) {
+            applySurielEffects(player);
         } else {
-            removeDraculaPickaxeEffects(player);
+            removeSurielEffects(player);
         }
     }
 
-    private void applyDraculaPickaxeEffects(Player player) {
+    private void applySurielEffects(Player player) {
         long time = player.getWorld().getTime();
         if (time >= 13000 && time <= 23000) {
             if (!(player.hasPotionEffect(PotionEffectType.NIGHT_VISION))) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 1, true, false));
             }
         } else {
-            removeDraculaPickaxeEffects(player);
+            removeSurielEffects(player);
         }
     }
 
-    private void removeDraculaPickaxeEffects(Player player) {
+    private void removeSurielEffects(Player player) {
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
     }
 
@@ -48,7 +48,7 @@ public class Pickaxe implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (event.getBlock().getType().toString().endsWith("_ORE")) {
-            if (isDraculaPickaxe(item) && player.hasPermission("dracula.pickaxe")) {
+            if (isSuriel(item) && player.hasPermission("dracula.pickaxe")) {
                 Collection<ItemStack> drops = event.getBlock().getDrops(item);
                 event.setDropItems(false);
                 if (!drops.isEmpty()) {
@@ -62,7 +62,7 @@ public class Pickaxe implements Listener {
         }
     }
 
-    private boolean isDraculaPickaxe(ItemStack item) {
+    private boolean isSuriel(ItemStack item) {
         if (item == null || item.getType() != Material.NETHERITE_PICKAXE) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 2;

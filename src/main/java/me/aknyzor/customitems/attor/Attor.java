@@ -1,4 +1,4 @@
-package me.aknyzor.customitems.dracula;
+package me.aknyzor.customitems.attor;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,21 +10,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Axe implements Listener {
+public class Attor implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isDraculaAxe(item)) {
-            applyDraculaAxeEffects(player);
+        if (isAttor(item)) {
+            applyAttorEffects(player);
         } else {
-            removeDraculaAxeEffects(player);
+            removeAttorEffects(player);
         }
     }
 
-    private void applyDraculaAxeEffects(Player player) {
+    private void applyAttorEffects(Player player) {
         long time = player.getWorld().getTime();
         if (time >= 13000 && time <= 23000) {
             if (!(player.hasPotionEffect(PotionEffectType.SPEED) && player.hasPotionEffect(PotionEffectType.HASTE))) {
@@ -32,16 +32,16 @@ public class Axe implements Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 1, true, false));
             }
         } else {
-            removeDraculaAxeEffects(player);
+            removeAttorEffects(player);
         }
     }
 
-    private void removeDraculaAxeEffects(Player player) {
+    private void removeAttorEffects(Player player) {
         player.removePotionEffect(PotionEffectType.HASTE);
         player.removePotionEffect(PotionEffectType.SPEED);
     }
 
-    private boolean isDraculaAxe(ItemStack item) {
+    private boolean isAttor(ItemStack item) {
         if (item == null || item.getType() != Material.NETHERITE_AXE) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 1;
