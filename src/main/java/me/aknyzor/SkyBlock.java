@@ -2,7 +2,7 @@ package me.aknyzor;
 
 import me.aknyzor.customitems.ListenerManager;
 import me.aknyzor.fishing.CustomCaught;
-import me.aknyzor.fishing.FishingArea;
+import me.aknyzor.fishing.FishingAFK;
 import me.aknyzor.toplist.*;
 import me.aknyzor.trader.Trader;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public final class SkyBlock extends JavaPlugin {
         blockBreakTopList = new TopListHandler("blockbreak_toplist.yml", this);
         mobKillTopList = new TopListHandler("mobkill_toplist.yml", this);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new FishingArea(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new FishingAFK(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomCaught(), this);
         new ListenerManager(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList), this);

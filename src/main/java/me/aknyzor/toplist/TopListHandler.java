@@ -64,12 +64,12 @@ public class TopListHandler {
         saveConfig();
     }
 
-
-//  private void loadTopList() {
-//    for (String key : config.getKeys(false)) {
-//        topPlayers.put(key, config.getInt(key));
-//    }
-//  }
+    @SuppressWarnings("unused")
+    private void loadTopList() {
+        for (String key : config.getKeys(false)) {
+            topPlayers.put(key, config.getInt(key));
+        }
+    }
 
     public LinkedHashMap<String, Integer> getTopPlayers() {
         return topPlayers;
