@@ -16,11 +16,10 @@ public class FishingAFK implements Listener {
 
         Player player = event.getPlayer();
         PlayerInventory inv = player.getInventory();
+        Action action = event.getAction();
 
-        if (event.getAction() == Action.RIGHT_CLICK_AIR ||
-                event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (inv.getItemInMainHand().getType() == Material.FISHING_ROD ||
-                    inv.getItemInOffHand().getType() == Material.FISHING_ROD) {
+        if (isFishingRod(inv)) {
+            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
                 Block b = player.getTargetBlock(null, 5);
 
                 if (b.getType() != Material.AIR) {
@@ -28,5 +27,10 @@ public class FishingAFK implements Listener {
                 }
             }
         }
+    }
+
+    private boolean isFishingRod(PlayerInventory inventory) {
+        return inventory.getItemInMainHand().getType() == Material.FISHING_ROD ||
+                inventory.getItemInOffHand().getType() == Material.FISHING_ROD;
     }
 }
