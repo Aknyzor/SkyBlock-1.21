@@ -1,2 +1,2 @@
 # SkyBlock 1.21
-SkyBlock Addon za KGB Minecraft Server
+SkyBlock Addon za Minecraft Server
