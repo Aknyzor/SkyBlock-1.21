@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -11,6 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Objects;
+
 
 public class The_Grave_Digger implements Listener {
 
@@ -21,16 +25,12 @@ public class The_Grave_Digger implements Listener {
 
         if (isTheGraveDigger(item)) {
             applyTheGraveDiggerEffects(player);
-        } else {
-            removeTheGraveDiggerEffects(player);
         }
     }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-
         if (isTheGraveDigger(item) && player.getGameMode() != GameMode.CREATIVE) {
             if (event.getBlock().getType() == Material.DIRT) {
                 event.setDropItems(false);
@@ -42,17 +42,13 @@ public class The_Grave_Digger implements Listener {
 
     private void applyTheGraveDiggerEffects(Player player) {
         long time = player.getWorld().getTime();
-        if (time >= 13000 && time <= 23000) {
-            if (!(player.hasPotionEffect(PotionEffectType.SPEED))) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 1, true, false));
-            }
-        } else {
-            removeTheGraveDiggerEffects(player);
-        }
-    }
+        PotionEffect speedEffect = player.getPotionEffect(PotionEffectType.SPEED);
 
-    private void removeTheGraveDiggerEffects(Player player) {
-        player.removePotionEffect(PotionEffectType.SPEED);
+        if (time >= 13000 && time <= 23000) {
+            if (!player.hasPotionEffect(PotionEffectType.SPEED) || (speedEffect != null && speedEffect.getAmplifier() <= 1)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 1, true, false));
+            }
+        }
     }
 
     private boolean isTheGraveDigger(ItemStack item) {

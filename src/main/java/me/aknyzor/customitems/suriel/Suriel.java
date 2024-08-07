@@ -3,6 +3,7 @@ package me.aknyzor.customitems.suriel;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -12,6 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class Suriel implements Listener {
 
@@ -22,27 +24,21 @@ public class Suriel implements Listener {
 
         if (isSuriel(item)) {
             applySurielEffects(player);
-        } else {
-            removeSurielEffects(player);
         }
     }
 
     private void applySurielEffects(Player player) {
         long time = player.getWorld().getTime();
+        PotionEffect nightEffect = player.getPotionEffect(PotionEffectType.NIGHT_VISION);
+
         if (time >= 13000 && time <= 23000) {
-            if (!(player.hasPotionEffect(PotionEffectType.NIGHT_VISION))) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 1, true, false));
+            if (!player.hasPotionEffect(PotionEffectType.NIGHT_VISION) || (nightEffect != null && nightEffect.getAmplifier() <= 1)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, 1, true, false));
             }
-        } else {
-            removeSurielEffects(player);
         }
     }
 
-    private void removeSurielEffects(Player player) {
-        player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-    }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
