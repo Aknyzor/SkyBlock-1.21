@@ -1,4 +1,4 @@
-package me.aknyzor.customitems.shadowsinger;
+package me.aknyzor.customitems.the_oratrices_judgement;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Shadowsinger implements Listener {
+public class The_Oratrices_Judgement implements Listener {
 
     private static final int EFFECT_DURATION = 400;
     private static final int SLOWNESS_AMPLIFIER = 3;
@@ -23,12 +23,12 @@ public class Shadowsinger implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isShadowsinger(item)) {
-            applyShadowsingerEffects(player);
+        if (isTheOratricesJudgement(item)) {
+            applyTheOratricesJudgementEffects(player);
         }
     }
 
-    private void applyShadowsingerEffects(Player player) {
+    private void applyTheOratricesJudgementEffects(Player player) {
         applyEffectIfAbsentOrLower(player, PotionEffectType.SLOWNESS, SLOWNESS_AMPLIFIER);
         applyEffectIfAbsentOrLower(player, PotionEffectType.MINING_FATIGUE, MINING_FATIGUE_AMPLIFIER);
     }
@@ -40,9 +40,9 @@ public class Shadowsinger implements Listener {
         }
     }
 
-    private boolean isShadowsinger(ItemStack item) {
+    private boolean isTheOratricesJudgement(ItemStack item) {
         if (item == null || item.getType() != Material.NETHERITE_SWORD) return false;
         ItemMeta meta = item.getItemMeta();
-        return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 11;
+        return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 27;
     }
 }

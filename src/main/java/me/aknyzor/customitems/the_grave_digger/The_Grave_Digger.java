@@ -13,17 +13,22 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
-
 
 public class The_Grave_Digger implements Listener {
+
+    private static final int START_TIME = 13000;
+    private static final int END_TIME = 23000;
+    private static final int EFFECT_DURATION = 400;
+    private static final int EFFECT_AMPLIFIER = 1;
+    private static final boolean AMBIENT = true;
+    private static final boolean PARTICLES = false;
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isTheGraveDigger(item)) {
+        if (isTheGraveDigger(item) && isNightTime(player.getWorld().getTime())) {
             applyTheGraveDiggerEffects(player);
         }
     }
@@ -41,13 +46,14 @@ public class The_Grave_Digger implements Listener {
     }
 
     private void applyTheGraveDiggerEffects(Player player) {
-        long time = player.getWorld().getTime();
-        PotionEffect speedEffect = player.getPotionEffect(PotionEffectType.SPEED);
+        applyEffectIfAbsentOrLower(player);
+    }
 
-        if (time >= 13000 && time <= 23000) {
-            if (!player.hasPotionEffect(PotionEffectType.SPEED) || (speedEffect != null && speedEffect.getAmplifier() <= 1)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 1, true, false));
-            }
+    private void applyEffectIfAbsentOrLower(Player player) {
+        PotionEffect currentEffect = player.getPotionEffect(PotionEffectType.SPEED);
+
+        if (currentEffect == null || currentEffect.getAmplifier() <= EFFECT_AMPLIFIER) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, EFFECT_DURATION, EFFECT_AMPLIFIER, AMBIENT, PARTICLES));
         }
     }
 
@@ -55,5 +61,9 @@ public class The_Grave_Digger implements Listener {
         if (item == null || item.getType() != Material.NETHERITE_SHOVEL) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 3;
+    }
+
+    private boolean isNightTime(long time) {
+        return time >= START_TIME && time <= END_TIME;
     }
 }

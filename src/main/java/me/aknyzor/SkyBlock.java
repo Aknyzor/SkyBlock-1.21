@@ -1,5 +1,6 @@
 package me.aknyzor;
 
+import me.aknyzor.customitems.Hearts;
 import me.aknyzor.customitems.ListenerManager;
 import me.aknyzor.fishing.CustomCaught;
 import me.aknyzor.fishing.FishingAFK;
@@ -7,10 +8,8 @@ import me.aknyzor.toplist.*;
 import me.aknyzor.trader.Trader;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -20,6 +19,7 @@ public final class SkyBlock extends JavaPlugin {
     private Trader trader;
     private TopListHandler blockBreakTopList;
     private TopListHandler mobKillTopList;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -42,7 +42,7 @@ public final class SkyBlock extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new FishingAFK(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomCaught(), this);
         new ListenerManager(this);
-        Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList), this);
+        /**Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList), this);
 
         trader = new Trader(this);
         trader.scheduleNPC();
@@ -60,7 +60,7 @@ public final class SkyBlock extends JavaPlugin {
                     new WeeklyRewardScheduler(blockBreakTopList, mobKillTopList).run();
                 }
             }
-        }.runTaskTimer(this, 0L, 20L);
+        }.runTaskTimer(this, 0L, 20L);**/
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new Top10Placeholders(this).register();
@@ -76,9 +76,13 @@ public final class SkyBlock extends JavaPlugin {
         getLogger().info("Napravljeno od strane Aknyzor");
         getLogger().info("=========================================");
 
-        trader.onDisable();
+        //trader.onDisable();
         blockBreakTopList.saveConfig();
         mobKillTopList.saveConfig();
+
+
+        // brisanje hashmapa od custom itema
+        Hearts.clearAllAttributes();
     }
 
     public TopListHandler getBlockBreakTopList() {

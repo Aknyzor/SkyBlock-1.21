@@ -10,32 +10,35 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
-
 public class The_Spine_Splitter implements Listener {
+
+    private static final int START_TIME = 0;
+    private static final int END_TIME = 13900;
+    private static final int EFFECT_DURATION = 400;
+    private static final int EFFECT_AMPLIFIER = 0;
+    private static final boolean AMBIENT = true;
+    private static final boolean PARTICLES = false;
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isTheSpineSplitter(item)) {
+        if (isTheSpineSplitter(item) && isDayTime(player.getWorld().getTime())) {
             applyTheSpineSplitterEffects(player);
         }
     }
 
     private void applyTheSpineSplitterEffects(Player player) {
-        long time = player.getWorld().getTime();
-        PotionEffect speedEffect = player.getPotionEffect(PotionEffectType.SPEED);
-        PotionEffect hasteEffect = player.getPotionEffect(PotionEffectType.HASTE);
+        applyEffectIfAbsentOrLower(player, PotionEffectType.SPEED);
+        applyEffectIfAbsentOrLower(player, PotionEffectType.HASTE);
+    }
 
-        if (time >= 0 && time <= 13900) {
-            if (!player.hasPotionEffect(PotionEffectType.SPEED) || (speedEffect != null && speedEffect.getAmplifier() <= 0)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 0, true, false));
-            }
-            if (!player.hasPotionEffect(PotionEffectType.HASTE) || (hasteEffect != null && hasteEffect.getAmplifier() <= 0)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 400, 0, true, false));
-            }
+    private void applyEffectIfAbsentOrLower(Player player, PotionEffectType effectType) {
+        PotionEffect currentEffect = player.getPotionEffect(effectType);
+
+        if (currentEffect == null || currentEffect.getAmplifier() <= EFFECT_AMPLIFIER) {
+            player.addPotionEffect(new PotionEffect(effectType, EFFECT_DURATION, EFFECT_AMPLIFIER, AMBIENT, PARTICLES));
         }
     }
 
@@ -43,5 +46,9 @@ public class The_Spine_Splitter implements Listener {
         if (item == null || item.getType() != Material.NETHERITE_AXE) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 24;
+    }
+
+    private boolean isDayTime(long time) {
+        return time >= START_TIME && time <= END_TIME;
     }
 }

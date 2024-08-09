@@ -1,4 +1,4 @@
-package me.aknyzor.customitems.the_bone_carver;
+package me.aknyzor.customitems.hyberns_blade;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,10 +10,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class The_Bone_Carver implements Listener {
+public class Hyberns_Blade implements Listener {
 
-    private static final int START_TIME = 13000;
-    private static final int END_TIME = 23000;
+    private static final int START_TIME = 0;
+    private static final int END_TIME = 13900;
     private static final int EFFECT_DURATION = 400;
     private static final int EFFECT_AMPLIFIER = 1;
     private static final boolean AMBIENT = true;
@@ -24,30 +24,31 @@ public class The_Bone_Carver implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (isTheBoneCarver(item) && isNightTime(player.getWorld().getTime())) {
-            applyTheBoneCarverEffects(player);
+        if (isHybernsBlade(item) && isDayTime(player.getWorld().getTime())) {
+            applyHybernsBladeEffects(player);
         }
     }
 
-    private void applyTheBoneCarverEffects(Player player) {
-        applyEffectIfAbsentOrLower(player);
+    private void applyHybernsBladeEffects(Player player) {
+        applyEffectIfAbsentOrLower(player, PotionEffectType.STRENGTH);
+        applyEffectIfAbsentOrLower(player, PotionEffectType.RESISTANCE);
     }
 
-    private void applyEffectIfAbsentOrLower(Player player) {
-        PotionEffect currentEffect = player.getPotionEffect(PotionEffectType.STRENGTH);
+    private void applyEffectIfAbsentOrLower(Player player, PotionEffectType effectType) {
+        PotionEffect currentEffect = player.getPotionEffect(effectType);
 
         if (currentEffect == null || currentEffect.getAmplifier() <= EFFECT_AMPLIFIER) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, EFFECT_DURATION, EFFECT_AMPLIFIER, AMBIENT, PARTICLES));
+            player.addPotionEffect(new PotionEffect(effectType, EFFECT_DURATION, EFFECT_AMPLIFIER, AMBIENT, PARTICLES));
         }
     }
 
-    private boolean isTheBoneCarver(ItemStack item) {
+    private boolean isHybernsBlade(ItemStack item) {
         if (item == null || item.getType() != Material.NETHERITE_SWORD) return false;
         ItemMeta meta = item.getItemMeta();
-        return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 10;
+        return meta != null && meta.hasCustomModelData() && meta.getCustomModelData() == 31;
     }
 
-    private boolean isNightTime(long time) {
+    private boolean isDayTime(long time) {
         return time >= START_TIME && time <= END_TIME;
     }
 }

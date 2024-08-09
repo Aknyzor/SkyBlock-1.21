@@ -17,78 +17,73 @@ import java.util.*;
 
 public class CustomCaught implements Listener {
 
-    /**
-     *
-     * Napravljeno od strane Aknyzor
-     *
-     */
-
     private final Random random = new Random();
-    private final Map<Category, List<LootItem>> lootTable = new HashMap<>();
-    private final Map<Category, Double> categoryChances = new HashMap<>();
+    private final Map<Category, List<LootItem>> lootTable = new EnumMap<>(Category.class);
+    private final Map<Category, Double> categoryChances = new EnumMap<>(Category.class);
 
     public CustomCaught() {
-        registerLoot();
-        registerCategoryChances();
+        initializeLootTable();
+        initializeCategoryChances();
     }
 
     @EventHandler
     public void onPlayerFish(PlayerFishEvent event) {
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            if (event.getCaught() instanceof Item) {
-                Item caught = (Item) event.getCaught();
-                Category category = selectCategoryBasedOnChance();
-                if (category != null) {
-                    List<LootItem> items = lootTable.get(category);
-                    if (items != null && !items.isEmpty()) {
-                        LootItem selected = selectRandomItem(items);
-                        if (selected != null) {
-                            ItemStack item = new ItemStack(selected.getMaterial());
-
-                            ItemMeta meta = item.getItemMeta();
-                            if (meta != null) {
-
-                                if (selected.getName() != null) {
-                                    meta.displayName(Component.text(selected.getName()));
-                                }
-
-                                if (category == Category.SPECIAL) {
-                                    meta.addEnchant(Enchantment.UNBREAKING, 1, true);
-                                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                }
-
-                                if (selected.getLore() != null) {
-                                    List<Component> loreLines = new ArrayList<>();
-                                    for (String loreLine : selected.getLore()) {
-                                        loreLines.add(Component.text(loreLine));
-                                    }
-                                    meta.lore(loreLines);
-                                }
-
-                                item.setItemMeta(meta);
-                            }
-
-                            caught.setItemStack(item);
-
-                            if (category == Category.SPECIAL) {
-                                Player ribolovac = event.getPlayer();
-                                StringBuilder loreBuilder = new StringBuilder();
-                                for (String loreLine : selected.getLore()) {
-                                    loreBuilder.append(loreLine.replaceAll("\\n", ""));
-                                }
-                                String loreMessage = loreBuilder.toString().replace("§8Found In: §9WATER", "");
-                                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                                    player.sendMessage("§6" + ribolovac.getName() + " §acaught a " + selected.getName() + "§a! " + loreMessage);
-                                }
-                            }
-                        }
+        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item) {
+            Item caught = (Item) event.getCaught();
+            Category category = selectCategoryBasedOnChance();
+            if (category != null) {
+                List<LootItem> items = lootTable.get(category);
+                if (items != null && !items.isEmpty()) {
+                    LootItem selected = selectRandomItem(items);
+                    if (selected != null) {
+                        updateCaughtItem(caught, selected, category, event.getPlayer());
                     }
                 }
             }
         }
     }
 
-    private void registerLoot() {
+    private void updateCaughtItem(Item caught, LootItem selected, Category category, Player player) {
+        ItemStack item = new ItemStack(selected.getMaterial());
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            if (selected.getName() != null) {
+                meta.displayName(Component.text(selected.getName()));
+            }
+
+            if (category == Category.SPECIAL) {
+                meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+
+            if (selected.getLore() != null) {
+                List<Component> loreLines = new ArrayList<>();
+                for (String loreLine : selected.getLore()) {
+                    loreLines.add(Component.text(loreLine));
+                }
+                meta.lore(loreLines);
+            }
+
+            item.setItemMeta(meta);
+            caught.setItemStack(item);
+
+            if (category == Category.SPECIAL) {
+                notifyPlayersOfSpecialItem(player, selected);
+            }
+        }
+    }
+
+    private void notifyPlayersOfSpecialItem(Player player, LootItem selected) {
+        String loreMessage = String.join("", selected.getLore()).replace("§8Found In: §9WATER", "");
+        String message = "§6" + player.getName() + " §acaught a " + selected.getName() + "§a! " + loreMessage;
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(message);
+        }
+    }
+
+    private void initializeLootTable() {
         lootTable.put(Category.FISH, Arrays.asList(
                 new LootItem(Material.TROPICAL_FISH, null, null),
                 new LootItem(Material.COD, null, null),
@@ -151,11 +146,6 @@ public class CustomCaught implements Listener {
                         "§8Found In: §9WATER",
                         "",
                         "§7Its' destiny."
-                )),
-                new LootItem(Material.BLAZE_POWDER, "§e§lRubber Duck", Arrays.asList(
-                        "§8Found In: §9WATER",
-                        "",
-                        "§7This isn't meant to be here!"
                 )),
                 new LootItem(Material.BLAZE_POWDER, "§e§lRubber Duck", Arrays.asList(
                         "§8Found In: §9WATER",
@@ -225,17 +215,16 @@ public class CustomCaught implements Listener {
         ));
     }
 
-    private void registerCategoryChances() {
-        categoryChances.put(Category.FISH, 0.40); // 40% šansa
-        categoryChances.put(Category.TREASURE, 0.30); // 30% šanse
-        categoryChances.put(Category.JUNK, 0.20); // 20% šanse
-        categoryChances.put(Category.SPECIAL, 0.10); // 10% šanse
+    private void initializeCategoryChances() {
+        categoryChances.put(Category.FISH, 0.40); // 40%
+        categoryChances.put(Category.TREASURE, 0.30); // 30%
+        categoryChances.put(Category.JUNK, 0.20); // 20%
+        categoryChances.put(Category.SPECIAL, 0.10); // 10%
     }
 
     private Category selectCategoryBasedOnChance() {
-        double totalWeight = categoryChances.values().stream().mapToDouble(Double::doubleValue).sum();
-        double randomValue = random.nextDouble() * totalWeight;
-        double cumulativeWeight = 0;
+        double randomValue = random.nextDouble();
+        double cumulativeWeight = 0.0;
 
         for (Map.Entry<Category, Double> entry : categoryChances.entrySet()) {
             cumulativeWeight += entry.getValue();
@@ -248,8 +237,7 @@ public class CustomCaught implements Listener {
     }
 
     private LootItem selectRandomItem(List<LootItem> items) {
-        int randomIndex = random.nextInt(items.size());
-        return items.get(randomIndex);
+        return items.get(random.nextInt(items.size()));
     }
 
     public enum Category {
