@@ -6,14 +6,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Top10Placeholders extends PlaceholderExpansion {
-
-    /**
-     *
-     * I dalje je u izradi (Aknyzor)
-     *
-     */
 
     private final SkyBlock plugin;
 
@@ -54,6 +50,10 @@ public class Top10Placeholders extends PlaceholderExpansion {
             return getTopListPlaceholder(plugin.getBlockBreakTopList().getTopPlayers(), identifier, "blockbreak_");
         } else if (identifier.startsWith("mobkill_")) {
             return getTopListPlaceholder(plugin.getMobKillTopList().getTopPlayers(), identifier, "mobkill_");
+        } else if (identifier.startsWith("harvest_")) {
+            return getTopListPlaceholder(plugin.getHarvestTopList().getTopPlayers(), identifier, "harvest_");
+        } else if (identifier.startsWith("vote_")) {
+            return getTopListPlaceholder(plugin.getVoteTopList().getTopPlayers(), identifier, "vote_");
         }
         return null;
     }
@@ -66,8 +66,18 @@ public class Top10Placeholders extends PlaceholderExpansion {
             return "0";
         }
 
-        if (position > 0 && position <= topList.size()) {
-            return (String) topList.keySet().toArray()[position - 1];
+        LinkedHashMap<String, Integer> sortedTopList = topList.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        if (position > 0 && position <= sortedTopList.size()) {
+            return (String) sortedTopList.keySet().toArray()[position - 1];
         } else {
             return "0";
         }
