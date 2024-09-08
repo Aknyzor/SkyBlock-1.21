@@ -13,125 +13,109 @@ import java.util.Random;
 
 public class SpawnerSpawning implements Listener {
 
+    private static final Random RAND = new Random();
+    private static final int DROP_CHANCE = 35;
+    private static final int RARE_DROP_CHANCE = 2;
+
     @EventHandler
     public void onMobSpawn(SpawnerSpawnEvent event) {
-       Random rand = new Random();
-       int number = rand.nextInt(100);
+        Entity entity = event.getEntity();
 
-        EntityType entityType = event.getEntity().getType();
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity) entity).setHealth(0);
 
-        switch (entityType) {
-            case ZOMBIE -> {
-                ((Zombie) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack rotten = new ItemStack(Material.ROTTEN_FLESH, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), rotten);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-            }
-            case SKELETON -> {
-                ((Skeleton) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack bone = new ItemStack(Material.BONE, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), bone);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                    ItemStack arrow = new ItemStack(Material.ARROW, 2);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), arrow);
-                }
-            }
-            case CREEPER -> {
-                ((Creeper) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack gunpowder = new ItemStack(Material.GUNPOWDER, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), gunpowder);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-            }
-            case SPIDER, CAVE_SPIDER -> {
-                ((Spider) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack string = new ItemStack(Material.STRING, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), string);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                    ItemStack eye = new ItemStack(Material.SPIDER_EYE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), eye);
-                }
-            }
-            case ENDERMAN -> {
-                ((Enderman) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack enderPearl = new ItemStack(Material.ENDER_PEARL, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), enderPearl);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-            }
-            case IRON_GOLEM -> {
-                ((IronGolem) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack iron = new ItemStack(Material.IRON_INGOT, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), iron);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                    ItemStack poppy = new ItemStack(Material.POPPY, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), poppy);
-                }
-            }
-            case BLAZE -> {
-                ((Blaze) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack blazeRod = new ItemStack(Material.BLAZE_ROD, 2);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), blazeRod);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-            }
-            case MAGMA_CUBE -> {
-                ((MagmaCube) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack magmaCream = new ItemStack(Material.MAGMA_CREAM, 2);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), magmaCream);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-            }
-            case WITHER_SKELETON -> {
-                ((WitherSkeleton) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    ItemStack bone = new ItemStack(Material.BONE, 3);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), bone);
-                    ItemStack coal = new ItemStack(Material.COAL, 2);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), coal);
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
-                }
-                if (number < 2.5) {
-                    ItemStack skull = new ItemStack(Material.WITHER_SKELETON_SKULL, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), skull);
-                }
-            }
-            case WITCH -> {
-                ((Witch) event.getEntity()).setHealth(0);
-                if (number < 35) {
-                    List<ItemStack> possibleDrops = Arrays.asList(
-                            new ItemStack(Material.GLOWSTONE_DUST, 2),
-                            new ItemStack(Material.REDSTONE, 2),
-                            new ItemStack(Material.GUNPOWDER, 2),
-                            new ItemStack(Material.SPIDER_EYE, 1)
-                    );
-
-                    Random randDrop = new Random();
-                    ItemStack randomDrop = possibleDrops.get(randDrop.nextInt(possibleDrops.size()));
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), randomDrop);
-
-                    ItemStack exp = new ItemStack(Material.EXPERIENCE_BOTTLE, 1);
-                    event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), exp);
+            if (shouldDropItems()) {
+                switch (entity.getType()) {
+                    case ZOMBIE -> dropZombieItems(entity);
+                    case SKELETON -> dropSkeletonItems(entity);
+                    case CREEPER -> dropCreeperItems(entity);
+                    case SPIDER, CAVE_SPIDER -> dropSpiderItems(entity);
+                    case ENDERMAN -> dropEndermanItems(entity);
+                    case IRON_GOLEM -> dropIronGolemItems(entity);
+                    case BLAZE -> dropBlazeItems(entity);
+                    case MAGMA_CUBE -> dropMagmaCubeItems(entity);
+                    case WITHER_SKELETON -> dropWitherSkeletonItems(entity);
+                    case WITCH -> dropWitchItems(entity);
                 }
             }
         }
+    }
+
+    private boolean shouldDropItems() {
+        return RAND.nextInt(100) < DROP_CHANCE;
+    }
+
+    private void dropZombieItems(Entity entity) {
+        dropItem(entity, Material.ROTTEN_FLESH, 3);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropSkeletonItems(Entity entity) {
+        dropItem(entity, Material.BONE, 3);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+        dropItem(entity, Material.ARROW, 2);
+    }
+
+    private void dropCreeperItems(Entity entity) {
+        dropItem(entity, Material.GUNPOWDER, 3);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropSpiderItems(Entity entity) {
+        dropItem(entity, Material.STRING, 3);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+        dropItem(entity, Material.SPIDER_EYE, 1);
+    }
+
+    private void dropEndermanItems(Entity entity) {
+        dropItem(entity, Material.ENDER_PEARL, 1);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropIronGolemItems(Entity entity) {
+        dropItem(entity, Material.IRON_INGOT, 3);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+        dropItem(entity, Material.POPPY, 1);
+    }
+
+    private void dropBlazeItems(Entity entity) {
+        dropItem(entity, Material.BLAZE_ROD, 2);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropMagmaCubeItems(Entity entity) {
+        dropItem(entity, Material.MAGMA_CREAM, 2);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropWitherSkeletonItems(Entity entity) {
+        dropItem(entity, Material.BONE, 3);
+        dropItem(entity, Material.COAL, 2);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+
+        if (RAND.nextInt(100) < RARE_DROP_CHANCE) {
+            dropItem(entity, Material.WITHER_SKELETON_SKULL, 1);
+        }
+    }
+
+    private void dropWitchItems(Entity entity) {
+        List<ItemStack> possibleDrops = Arrays.asList(
+                new ItemStack(Material.GLOWSTONE_DUST, 2),
+                new ItemStack(Material.REDSTONE, 2),
+                new ItemStack(Material.GUNPOWDER, 2),
+                new ItemStack(Material.SPIDER_EYE, 1)
+        );
+        ItemStack randomDrop = possibleDrops.get(RAND.nextInt(possibleDrops.size()));
+        dropItem(entity, randomDrop);
+        dropItem(entity, Material.EXPERIENCE_BOTTLE, 1);
+    }
+
+    private void dropItem(Entity entity, Material material, int amount) {
+        ItemStack item = new ItemStack(material, amount);
+        dropItem(entity, item);
+    }
+
+    private void dropItem(Entity entity, ItemStack item) {
+        entity.getLocation().getWorld().dropItem(entity.getLocation(), item);
     }
 }
