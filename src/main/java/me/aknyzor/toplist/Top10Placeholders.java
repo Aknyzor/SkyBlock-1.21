@@ -59,11 +59,16 @@ public class Top10Placeholders extends PlaceholderExpansion {
     }
 
     private String getTopListPlaceholder(LinkedHashMap<String, Integer> topList, String identifier, String prefix) {
+        boolean isValue = identifier.endsWith("_value");
+        if (isValue) {
+            identifier = identifier.replace("_value", "");
+        }
+
         int position;
         try {
             position = Integer.parseInt(identifier.replace(prefix, ""));
         } catch (NumberFormatException e) {
-            return "0";
+            return "N/A";
         }
 
         LinkedHashMap<String, Integer> sortedTopList = topList.entrySet()
@@ -77,9 +82,13 @@ public class Top10Placeholders extends PlaceholderExpansion {
                 ));
 
         if (position > 0 && position <= sortedTopList.size()) {
-            return (String) sortedTopList.keySet().toArray()[position - 1];
+            if (isValue) {
+                return String.valueOf(sortedTopList.values().toArray()[position - 1]);
+            } else {
+                return (String) sortedTopList.keySet().toArray()[position - 1];
+            }
         } else {
-            return "0";
+            return isValue ? "0" : "N/A";
         }
     }
 }

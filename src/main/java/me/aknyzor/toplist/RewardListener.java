@@ -11,19 +11,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RewardListener implements Listener {
 
     private final String rewardsFileName = "weeklyRewards.yml";
 
-    private Map<String, String> loadRewards() {
-        Map<String, String> rewards = new HashMap<>();
+    private Map<String, List<String>> loadRewards() {
+        Map<String, List<String>> rewards = new HashMap<>();
         File file = new File(SkyBlock.getInstance().getDataFolder(), rewardsFileName);
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         for (String key : config.getKeys(false)) {
-            rewards.put(key, config.getString(key));
+            rewards.put(key, config.getStringList(key));
         }
 
         return rewards;
@@ -33,11 +34,13 @@ public class RewardListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         String playerName = event.getPlayer().getName();
 
-        Map<String, String> rewards = loadRewards();
+        Map<String, List<String>> rewards = loadRewards();
 
-        String reward = rewards.get(playerName);
-        if (reward != null) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward);
+        List<String> commands = rewards.get(playerName);
+        if (commands != null) {
+            for (String command : commands) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            }
             removePlayerReward(playerName);
         }
     }

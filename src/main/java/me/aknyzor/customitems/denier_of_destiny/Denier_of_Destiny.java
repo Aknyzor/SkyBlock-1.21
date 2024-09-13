@@ -20,7 +20,7 @@ public class Denier_of_Destiny implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack item = player.getInventory().getItemInOffHand();
 
         if (isDenierofDestinyCarver(item)) {
             applyDenierofDestinyEffects(player);

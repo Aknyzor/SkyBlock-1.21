@@ -9,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WeeklyRewardScheduler extends BukkitRunnable {
     private final TopListHandler blockBreakTopList;
@@ -18,7 +18,7 @@ public class WeeklyRewardScheduler extends BukkitRunnable {
     private final TopListHandler harvestTopList;
     private final TopListHandler voteTopList;
 
-    private final Map<Integer, String> placeCommands = new LinkedHashMap<>();
+    private final Map<Integer, List<String>> placeCommands = new LinkedHashMap<>();
 
     public WeeklyRewardScheduler(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList) {
         this.blockBreakTopList = blockBreakTopList;
@@ -26,15 +26,18 @@ public class WeeklyRewardScheduler extends BukkitRunnable {
         this.harvestTopList = harvestTopList;
         this.voteTopList = voteTopList;
 
-        for (int i = 1; i <= 10; i++) {
-            placeCommands.put(i, "eco give %player% 1000");
-        }
+        // Definišemo komande za različita mesta
+        placeCommands.put(1, Arrays.asList("eco give %player% 1000", "xp set %player% 10 levels"));
+        placeCommands.put(2, Arrays.asList("eco give %player% 900", "xp set %player% 9 levels"));
+        placeCommands.put(3, Arrays.asList("eco give %player% 800", "xp set %player% 8 levels"));
+        // Dodajte ostale komande za preostala mesta po potrebi
+        placeCommands.put(10, Arrays.asList("eco give %player% 100", "xp set %player% 1 levels"));
     }
 
     @Override
     public void run() {
         LinkedHashMap<String, Integer> combinedTopList = getCombinedTopList();
-        Map<String, String> rewards = new LinkedHashMap<>();
+        Map<String, List<String>> rewards = new LinkedHashMap<>();
 
         int place = 1;
         for (Map.Entry<String, Integer> entry : combinedTopList.entrySet()) {
@@ -42,13 +45,19 @@ public class WeeklyRewardScheduler extends BukkitRunnable {
 
             String playerName = entry.getKey();
             Player player = Bukkit.getPlayer(playerName);
-            final String command = placeCommands.getOrDefault(place, "broadcast Congratulations to %player%!")
-                    .replace("%player%", playerName);
+            List<String> commands = placeCommands.getOrDefault(place, Collections.singletonList("broadcast Congratulations to %player%!"))
+                    .stream()
+                    .map(cmd -> cmd.replace("%player%", playerName))
+                    .collect(Collectors.toList());
 
             if (player != null) {
-                Bukkit.getScheduler().runTask(SkyBlock.getInstance(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+                Bukkit.getScheduler().runTask(SkyBlock.getInstance(), () -> {
+                    for (String command : commands) {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                    }
+                });
             } else {
-                rewards.put(playerName, command);
+                rewards.put(playerName, commands);
             }
             place++;
         }
@@ -86,12 +95,12 @@ public class WeeklyRewardScheduler extends BukkitRunnable {
         }
     }
 
-    private void saveRewards(Map<String, String> rewards) {
+    private void saveRewards(Map<String, List<String>> rewards) {
         String fileName = "weeklyRewards.yml";
         File file = new File(SkyBlock.getInstance().getDataFolder(), fileName);
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        for (Map.Entry<String, String> entry : rewards.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : rewards.entrySet()) {
             config.set(entry.getKey(), entry.getValue());
         }
 

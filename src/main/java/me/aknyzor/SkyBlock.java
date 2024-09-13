@@ -20,7 +20,6 @@ import java.util.Calendar;
 public final class SkyBlock extends JavaPlugin {
 
     private static SkyBlock instance;
-    private Trader trader;
     private TopListHandler blockBreakTopList;
     private TopListHandler mobKillTopList;
 
@@ -56,7 +55,7 @@ public final class SkyBlock extends JavaPlugin {
         new ListenerManager(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList), this);
 
-        trader = new Trader(this);
+        Trader trader = new Trader(this);
         trader.scheduleNPC();
 
         new BukkitRunnable() {
@@ -93,7 +92,6 @@ public final class SkyBlock extends JavaPlugin {
         getLogger().info("Napravljeno od strane Aknyzor");
         getLogger().info("=========================================");
 
-        trader.onDisable();
         blockBreakTopList.saveConfig();
         mobKillTopList.saveConfig();
         harvestTopList.saveConfig();

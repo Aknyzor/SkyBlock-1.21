@@ -3,7 +3,6 @@ package me.aknyzor.toplist;
 import com.bencodez.votingplugin.events.PlayerVoteEvent;
 import me.aknyzor.SkyBlock;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,6 +21,7 @@ public class Top10Events implements Listener {
     private final TopListHandler harvestTopList;
 
     private final TopListHandler voteTopList;
+    private static final String BLOCK_PLACED_BY_PLAYER = "placedByPlayer";
 
     public Top10Events(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList) {
         this.blockBreakTopList = blockBreakTopList;
@@ -30,21 +30,26 @@ public class Top10Events implements Listener {
         this.voteTopList = voteTopList;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBreak(BlockBreakEvent event) {
         if (blockBreakTopList == null) {
             return;
         }
 
-        if (event.getBlock().hasMetadata("PLACED")) {
+        if (event.getBlock().hasMetadata(BLOCK_PLACED_BY_PLAYER)) {
             return;
         }
 
-        String playerName = event.getPlayer().getName();
-        blockBreakTopList.addPlayer(playerName, 1);
+        blockBreakTopList.addPlayer(event.getPlayer().getName(), 1);
+
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlace(BlockPlaceEvent event) {
+        event.getBlock().setMetadata(BLOCK_PLACED_BY_PLAYER, new FixedMetadataValue(SkyBlock.getInstance(), true));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onHarvest(BlockBreakEvent event) {
         if (harvestTopList == null) {
             return;
@@ -62,16 +67,11 @@ public class Top10Events implements Listener {
 
     @EventHandler
     public void onVote(PlayerVoteEvent event) {
-        voteTopList.addPlayer(event.getPlayer(), 1);
-    }
-
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        Block b = event.getBlock();
-        if (!b.hasMetadata("PLACED")) {
-            b.setMetadata("PLACED", new FixedMetadataValue(SkyBlock.getInstance(), "PLACED"));
+        if (voteTopList == null) {
+            return;
         }
+
+        voteTopList.addPlayer(event.getPlayer(), 1);
     }
 
     @EventHandler
