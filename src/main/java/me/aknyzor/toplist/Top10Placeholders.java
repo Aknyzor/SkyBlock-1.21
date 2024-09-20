@@ -54,6 +54,10 @@ public class Top10Placeholders extends PlaceholderExpansion {
             return getTopListPlaceholder(plugin.getHarvestTopList().getTopPlayers(), identifier, "harvest_");
         } else if (identifier.startsWith("vote_")) {
             return getTopListPlaceholder(plugin.getVoteTopList().getTopPlayers(), identifier, "vote_");
+        }else if (identifier.startsWith("fishing_")) {
+            return getTopListPlaceholder(plugin.getFishingTopList().getTopPlayers(), identifier, "fishing_");
+        }else if (identifier.startsWith("place_")) {
+            return getTopListPlaceholder(plugin.getPlaceTopList().getTopPlayers(), identifier, "place_");
         }
         return null;
     }

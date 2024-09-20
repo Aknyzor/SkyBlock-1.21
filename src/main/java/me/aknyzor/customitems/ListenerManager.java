@@ -4,6 +4,7 @@ import me.aknyzor.customitems.angel_kiss.Angel_Kiss;
 import me.aknyzor.customitems.archeron_wings.Archeron_Wings;
 import me.aknyzor.customitems.attor.Attor;
 import me.aknyzor.customitems.denier_of_destiny.Denier_of_Destiny;
+import me.aknyzor.customitems.fae_mask.Fae_Mask;
 import me.aknyzor.customitems.hyberns_blade.Hyberns_Blade;
 import me.aknyzor.customitems.illyrian_wings.Illyrian_Wings;
 import me.aknyzor.customitems.shadowsinger.Shadowsinger;
@@ -34,7 +35,8 @@ public class ListenerManager {
             new The_Oratrices_Judgement(),
             new Denier_of_Destiny(),
             new Hyberns_Blade(),
-            new Archeron_Wings()
+            new Archeron_Wings(),
+            new Fae_Mask()
     );
 
     public ListenerManager(JavaPlugin plugin) {

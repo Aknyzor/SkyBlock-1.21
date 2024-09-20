@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.EnumSet;
@@ -19,15 +20,30 @@ public class Top10Events implements Listener {
     private final TopListHandler blockBreakTopList;
     private final TopListHandler mobKillTopList;
     private final TopListHandler harvestTopList;
-
     private final TopListHandler voteTopList;
+    private final TopListHandler fishingTopList;
+    private final TopListHandler placeTopList;
+
     private static final String BLOCK_PLACED_BY_PLAYER = "placedByPlayer";
 
-    public Top10Events(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList) {
+    public Top10Events(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList, TopListHandler fishingTopList, TopListHandler placeTopList) {
         this.blockBreakTopList = blockBreakTopList;
         this.mobKillTopList = mobKillTopList;
         this.harvestTopList = harvestTopList;
         this.voteTopList = voteTopList;
+        this.fishingTopList = fishingTopList;
+        this.placeTopList = placeTopList;
+    }
+
+    @EventHandler
+    public void onFishing(PlayerFishEvent event) {
+        if (fishingTopList == null) {
+            return;
+        }
+
+        if (event.getCaught() != null) {
+            fishingTopList.addPlayer(event.getPlayer().getName(), 1);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -47,6 +63,12 @@ public class Top10Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlace(BlockPlaceEvent event) {
         event.getBlock().setMetadata(BLOCK_PLACED_BY_PLAYER, new FixedMetadataValue(SkyBlock.getInstance(), true));
+
+        if (placeTopList == null) {
+            return;
+        }
+
+        placeTopList.addPlayer(event.getPlayer().getName(), 1);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

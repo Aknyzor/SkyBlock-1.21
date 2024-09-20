@@ -25,6 +25,8 @@ public final class SkyBlock extends JavaPlugin {
 
     private TopListHandler harvestTopList;
     private TopListHandler voteTopList;
+    private TopListHandler fishingTopList;
+    private TopListHandler placeTopList;
 
     @Override
     public void onEnable() {
@@ -46,6 +48,8 @@ public final class SkyBlock extends JavaPlugin {
         mobKillTopList = new TopListHandler("mobkill_toplist.yml", this);
         harvestTopList = new TopListHandler("harvest_toplist.yml", this);
         voteTopList = new TopListHandler("vote_toplist.yml", this);
+        fishingTopList = new TopListHandler("fishing_toplist.yml", this);
+        placeTopList = new TopListHandler("place_toplist.yml", this);
 
         Bukkit.getServer().getPluginManager().registerEvents(new FishingAFK(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new RewardListener(), this);
@@ -53,10 +57,20 @@ public final class SkyBlock extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new SpawnerSpawning(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new CustomCaught(), this);
         new ListenerManager(this);
-        Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new Top10Events(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList, fishingTopList, placeTopList), this);
 
         Trader trader = new Trader(this);
         trader.scheduleNPC();
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (day == Calendar.WEDNESDAY || day == Calendar.SATURDAY) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_elderstone");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_windermoor");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_valordar");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_nyrondor");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_kragathor");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm mobs kill npc_farmer_selenthia");
+        }
 
         new BukkitRunnable() {
             @Override
@@ -68,7 +82,7 @@ public final class SkyBlock extends JavaPlugin {
                 int second = calendar.get(Calendar.SECOND);
 
                 if (day == Calendar.SUNDAY && hour == 23 && minute == 0 && second == 0) {
-                    new WeeklyRewardScheduler(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList).run();
+                    new WeeklyRewardScheduler(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList, fishingTopList, placeTopList).run();
                 }
             }
         }.runTaskTimer(this, 0L, 20L);
@@ -79,7 +93,7 @@ public final class SkyBlock extends JavaPlugin {
 
         PluginCommand topCommand = getCommand("eventtop");
         if (topCommand != null) {
-            topCommand.setExecutor(new TopCommand(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList));
+            topCommand.setExecutor(new TopCommand(blockBreakTopList, mobKillTopList, harvestTopList, voteTopList, fishingTopList, placeTopList));
         } else {
             getLogger().warning("Command 'eventtop' is not defined in plugin.yml or failed to load.");
         }
@@ -96,6 +110,8 @@ public final class SkyBlock extends JavaPlugin {
         mobKillTopList.saveConfig();
         harvestTopList.saveConfig();
         voteTopList.saveConfig();
+        fishingTopList.saveConfig();
+        placeTopList.saveConfig();
 
 
         // brisanje hashmapa od custom itema
@@ -116,6 +132,14 @@ public final class SkyBlock extends JavaPlugin {
 
     public TopListHandler getVoteTopList() {
         return voteTopList;
+    }
+
+    public TopListHandler getFishingTopList() {
+        return fishingTopList;
+    }
+
+    public TopListHandler getPlaceTopList() {
+        return placeTopList;
     }
 
     public static SkyBlock getInstance() {

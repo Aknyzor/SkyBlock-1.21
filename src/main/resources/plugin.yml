@@ -4,7 +4,6 @@ main: me.aknyzor.SkyBlock
 api-version: '1.21'
 authors: [Aknzyor]
 description: Plugin za KGB SkyBlock
-depend: [Citizens]
 commands:
   eventtop:
     description: Prikazuje top 10 igrača po srušenim blokovima ili ubijenim mobovima.

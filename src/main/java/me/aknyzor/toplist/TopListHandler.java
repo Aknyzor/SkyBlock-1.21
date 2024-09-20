@@ -21,7 +21,6 @@ public class TopListHandler {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
 
-        // Kreiranje fajla ako ne postoji
         if (!file.exists()) {
             boolean dirsCreated = file.getParentFile().mkdirs();
             if (dirsCreated) {
@@ -37,11 +36,9 @@ public class TopListHandler {
             }
         }
 
-        // Učitavanje konfiguracije
         this.config = YamlConfiguration.loadConfiguration(file);
         this.topPlayers = new LinkedHashMap<>();
 
-        // Učitavanje podataka iz fajla
         loadConfig();
     }
 

@@ -14,37 +14,46 @@ public class TopCommand implements CommandExecutor {
     private final TopListHandler blockBreakTopList;
     private final TopListHandler mobKillTopList;
     private final TopListHandler harvestTopList;
-
     private final TopListHandler voteTopList;
+    private final TopListHandler fishingTopList;
+    private final TopListHandler placeTopList;
 
-    public TopCommand(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList) {
+    public TopCommand(TopListHandler blockBreakTopList, TopListHandler mobKillTopList, TopListHandler harvestTopList, TopListHandler voteTopList, TopListHandler fishingTopList, TopListHandler placeTopList) {
         this.blockBreakTopList = blockBreakTopList;
         this.mobKillTopList = mobKillTopList;
         this.harvestTopList = harvestTopList;
         this.voteTopList = voteTopList;
+        this.fishingTopList = fishingTopList;
+        this.placeTopList = placeTopList;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("Usage: /eventtop <blocks|mobs|harvest|vote>");
+            sender.sendMessage("Usage: /eventtop <break|mobs|harvest|vote|fishing|place>");
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("blocks")) {
-            displayTopList(sender, blockBreakTopList, "Top 10 Igrača za uništene blokove:");
+        if (args[0].equalsIgnoreCase("break")) {
+            displayTopList(sender, blockBreakTopList, "Top 10 igrača po uništenim blokovima:");
             return true;
         } else if (args[0].equalsIgnoreCase("mobs")) {
-            displayTopList(sender, mobKillTopList, "Top 10 Igrača za ubijenih mobova:");
+            displayTopList(sender, mobKillTopList, "Top 10 igrača po ubijenim mobovima:");
             return true;
-        }else if (args[0].equalsIgnoreCase("harvest")) {
-            displayTopList(sender, harvestTopList, "Top 10 Igrača za ubrane biljke:");
+        } else if (args[0].equalsIgnoreCase("harvest")) {
+            displayTopList(sender, harvestTopList, "Top 10 igrača po ubranom bilju:");
             return true;
-        }else if (args[0].equalsIgnoreCase("vote")) {
-            displayTopList(sender, voteTopList, "Top 10 Igrača za vote:");
+        } else if (args[0].equalsIgnoreCase("vote")) {
+            displayTopList(sender, voteTopList, "Top 10 igrača po glasovima:");
+            return true;
+        } else if (args[0].equalsIgnoreCase("fishing")) {
+            displayTopList(sender, fishingTopList, "Top 10 igrača po ulovljenim ribama:");
+            return true;
+        } else if (args[0].equalsIgnoreCase("place")) {
+            displayTopList(sender, placeTopList, "Top 10 igrača po postavljenim blokovima:");
             return true;
         } else {
-            sender.sendMessage("Usage: /eventtop <blocks|mobs|harvest|vote>");
+            sender.sendMessage("Usage: /eventtop <break|mobs|harvest|vote|fishing|place>");
             return true;
         }
     }
